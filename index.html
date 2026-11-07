@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compartir ubicación</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f3f5fa;
+  text-align: center;
+  padding: 35px 15px;
+}
+.card {
+  background: white;
+  max-width: 380px;
+  margin: auto;
+  padding: 25px;
+  border-radius: 15px;
+}
+button {
+  background: #1769aa;
+  color: white;
+  border: 0;
+  padding: 14px 22px;
+  border-radius: 9px;
+  font-size: 16px;
+}
+</style>
+</head>
+<body>
+<div class="card">
+<h2>Compartir mi ubicación</h2>
+<p>
+Si deseas compartir tu ubicación actual,
+presiona el botón y autoriza el acceso GPS.
+</p>
+<button onclick="compartir()">
+Compartir ubicación
+</button>
+<p id="resultado"></p>
+</div>
+
+<script>
+function compartir() {
+  const r = document.getElementById("resultado");
+
+  if (!navigator.geolocation) {
+    r.textContent = "GPS no disponible.";
+    return;
+  }
+
+  r.textContent = "Solicitando permiso...";
+
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      const maps = `https://www.google.com/maps?q=${lat},${lon}`;
+
+      r.innerHTML = "Ubicación obtenida.<br>" +
+        `<a href="${maps}" target="_blank">Ver en Google Maps</a>`;
+
+      const mensaje = "Mi ubicación: " + maps;
+      const whatsapp = "https://wa.me/?text=" +
+        encodeURIComponent(mensaje);
+
+      r.innerHTML += "<br><br>" +
+        `<a href="${whatsapp}" target="_blank">Enviar por WhatsApp</a>`;
+    },
+    function() {
+      r.textContent =
+        "No se pudo obtener la ubicación. Revisa los permisos.";
+    },
+    {enableHighAccuracy: true, timeout: 15000}
+  );
+}
+</script>
+</body>
+</html>
